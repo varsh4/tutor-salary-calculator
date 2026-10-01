@@ -14,9 +14,9 @@ st.set_page_config(
 # ============================================================
 # PAYMENT RULES
 # ============================================================
-SESSION_RATE = 375.0
-WAIT_RATE_HIGH = 100.0       # Wait % > 85%
-WAIT_RATE_LOW = 195.0        # Wait % <= 85%
+DEFAULT_SESSION_RATE = 375.0
+DEFAULT_WAIT_RATE_HIGH = 100.0
+DEFAULT_WAIT_RATE_LOW = 195.0
 WAIT_THRESHOLD = 85.0
 MAX_SESSION_LENGTH = 60      # minutes
 
@@ -146,9 +146,11 @@ st.markdown(
 with st.sidebar:
     st.header("⚙️ Payment Rules")
 
-    st.metric("Session Rate", f"₹{SESSION_RATE:,.0f}/hr")
-    st.metric("Wait Rate > 85%", f"₹{WAIT_RATE_HIGH:,.0f}/hr")
-    st.metric("Wait Rate ≤ 85%", f"₹{WAIT_RATE_LOW:,.0f}/hr")
+    st.markdown("### 💰 Monthly Payment Rates")
+    st.caption("Enter the rates for the current month.")
+    session_rate = st.number_input("Session Pay Rate (₹/hour)", min_value=0.0, value=DEFAULT_SESSION_RATE, step=1.0)
+    wait_rate_high = st.number_input("Wait Pay Rate — above 85% (₹/hour)", min_value=0.0, value=DEFAULT_WAIT_RATE_HIGH, step=1.0)
+    wait_rate_low = st.number_input("Wait Pay Rate — 85% or below (₹/hour)", min_value=0.0, value=DEFAULT_WAIT_RATE_LOW, step=1.0)
 
     st.divider()
 
@@ -242,9 +244,9 @@ if total_minutes > 0:
 else:
     wait_percentage = 0.0
 
-wait_rate = WAIT_RATE_HIGH if wait_percentage > WAIT_THRESHOLD else WAIT_RATE_LOW
+wait_rate = wait_rate_high if wait_percentage > WAIT_THRESHOLD else wait_rate_low
 
-session_pay = (session_minutes / 60.0) * SESSION_RATE
+session_pay = (session_minutes / 60.0) * session_rate
 wait_pay = (wait_minutes / 60.0) * wait_rate
 total_pay = session_pay + wait_pay
 
@@ -273,12 +275,12 @@ with k4:
 if wait_percentage > WAIT_THRESHOLD:
     st.warning(
         f"⚠️ Wait time is **{wait_percentage:.2f}%**, above the **{WAIT_THRESHOLD:.0f}%** threshold. "
-        f"Current wait rate: **₹{WAIT_RATE_HIGH:,.0f}/hour**."
+        f"Current wait rate: **₹{wait_rate_high:,.2f}/hour**."
     )
 else:
     st.success(
         f"✅ Wait time is **{wait_percentage:.2f}%**, at or below the **{WAIT_THRESHOLD:.0f}%** threshold. "
-        f"Current wait rate: **₹{WAIT_RATE_LOW:,.0f}/hour**."
+        f"Current wait rate: **₹{wait_rate_low:,.2f}/hour**."
     )
 
 # ============================================================
@@ -414,8 +416,8 @@ st.markdown(
 
 comparison1, comparison2, comparison3 = st.columns(3)
 
-wait_pay_at_high = (wait_minutes / 60.0) * WAIT_RATE_HIGH
-wait_pay_at_low = (wait_minutes / 60.0) * WAIT_RATE_LOW
+wait_pay_at_high = (wait_minutes / 60.0) * wait_rate_high
+wait_pay_at_low = (wait_minutes / 60.0) * wait_rate_low
 difference = wait_pay_at_low - wait_pay_at_high
 
 with comparison1:
@@ -465,7 +467,7 @@ with st.expander("📘 Formula Reference"):
     )
 
     st.markdown("**Session pay**")
-    st.latex(r"\frac{\text{Session Minutes}}{60}\times375")
+    st.latex(r"\frac{\text{Session Minutes}}{60}\times\text{Session Pay Rate}")
 
     st.markdown("**Wait pay**")
     st.latex(r"\frac{\text{Wait Minutes}}{60}\times\text{Applicable Wait Rate}")
