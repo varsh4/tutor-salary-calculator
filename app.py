@@ -162,7 +162,7 @@ with st.sidebar:
 
     st.divider()
     st.caption(
-        "Monthly reports provide aggregate minutes, so the exact number of individual sessions cannot be determined."
+        "Payment rates stay fixed by the rules above. Enter the current month's report values in the main panel."
     )
 
 # ============================================================
@@ -180,7 +180,8 @@ with st.container(border=True):
         scheduled_hours = st.number_input(
             "Scheduled Hours",
             min_value=0.0,
-            value=128.0,
+            value=None,
+            placeholder="Enter hours",
             step=0.01,
         )
 
@@ -188,7 +189,8 @@ with st.container(border=True):
         online_hours = st.number_input(
             "Online Hours",
             min_value=0.0,
-            value=117.86,
+            value=None,
+            placeholder="Enter hours",
             step=0.01,
         )
 
@@ -196,7 +198,8 @@ with st.container(border=True):
         wait_minutes = st.number_input(
             "Minutes Waiting",
             min_value=0.0,
-            value=6311.0,
+            value=None,
+            placeholder="Enter minutes",
             step=1.0,
         )
 
@@ -204,9 +207,30 @@ with st.container(border=True):
         session_minutes = st.number_input(
             "Minutes In Session",
             min_value=0.0,
-            value=842.0,
+            value=None,
+            placeholder="Enter minutes",
             step=1.0,
         )
+
+# ============================================================
+# INPUT VALIDATION
+# ============================================================
+inputs_complete = all(
+    value is not None
+    for value in (
+        scheduled_hours,
+        online_hours,
+        wait_minutes,
+        session_minutes,
+    )
+)
+
+if not inputs_complete:
+    st.info(
+        "👆 Enter this month's Scheduled Hours, Online Hours, Minutes Waiting, "
+        "and Minutes In Session above to calculate the salary."
+    )
+    st.stop()
 
 # ============================================================
 # CALCULATIONS
@@ -332,7 +356,7 @@ st.markdown(
     '<div class="section-title">4. Quick Calculator</div>',
     unsafe_allow_html=True
 )
-st.caption("A simple utility for checking calculations while reviewing your report.")
+st.caption("Enter your current month's report values above. The calculator updates automatically.")
 
 with st.container(border=True):
     calc_left, calc_right = st.columns([4, 1])
