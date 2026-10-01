@@ -30,13 +30,18 @@ st.markdown(
         background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 35%, #f5f3ff 100%);
     }
 
+    /* Remove Streamlit's top toolbar/header so the app starts at the top */
+    header[data-testid="stHeader"] {
+        display: none;
+    }
+
     .block-container {
-        padding-top: 1.5rem;
+        padding-top: 1rem;
         padding-bottom: 3rem;
     }
 
     .header-area {
-        margin-top: 0.5rem;
+        margin-top: 0;
         margin-bottom: 1.25rem;
     }
 
