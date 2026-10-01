@@ -1,6 +1,4 @@
-from pathlib import Path
-
-source = r'''import math
+import math
 import streamlit as st
 
 # ============================================================
@@ -454,8 +452,3 @@ with st.expander("📘 Formula Reference"):
         "The 85% calculation uses aggregate monthly minutes and does not assume "
         "an average session length."
     )
-'''
-
-path = Path("/mnt/data/tutor_salary_calculator_updated.py")
-path.write_text(source, encoding="utf-8")
-print(f"Created: {path}")
